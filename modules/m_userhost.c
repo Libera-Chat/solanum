@@ -76,29 +76,12 @@ m_userhost(struct MsgBuf *msgbuf_p, struct Client *client_p, struct Client *sour
 
 		if((target_p = find_person(parv[i])) != NULL)
 		{
-			/*
-			 * Show real IP for USERHOST on yourself.
-			 * This is needed for things like mIRC, which do a server-based
-			 * lookup (USERHOST) to figure out what the clients' local IP
-			 * is.  Useful for things like NAT, and dynamic dial-up users.
-			 */
-			if(MyClient(target_p) && (target_p == source_p))
-			{
-				rl = sprintf(response, "%s%s=%c%s@%s ",
-						target_p->name,
-						SeesOper(target_p, source_p) ? "*" : "",
-						(target_p->user->away) ? '-' : '+',
-						target_p->username,
-						target_p->sockhost);
-			}
-			else
-			{
-				rl = sprintf(response, "%s%s=%c%s@%s ",
-						target_p->name,
-						SeesOper(target_p, source_p) ? "*" : "",
-						(target_p->user->away) ? '-' : '+',
-						target_p->username, target_p->host);
-			}
+			rl = sprintf(response, "%s%s=%c%s@%s ",
+					target_p->name,
+					SeesOper(target_p, source_p) ? "*" : "",
+					(target_p->user->away) ? '-' : '+',
+					target_p->username,
+					show_ip(source_p, target_p) ? target_p->sockhost : target_p->host);
 
 			if((rl + cur_len) < (BUFSIZE - 10))
 			{
