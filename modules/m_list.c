@@ -310,6 +310,8 @@ mo_list(struct MsgBuf *msgbuf_p, struct Client *client_p, struct Client *source_
 	return;
 
 fail:
+	rb_free(params->mask);
+	rb_free(params->nomask);
 	rb_free(params);
 	sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
 	sendto_one_notice(source_p, ":Invalid parameters for /LIST");
